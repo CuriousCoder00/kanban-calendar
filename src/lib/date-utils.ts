@@ -54,7 +54,11 @@ export function formatDateForDisplay(date: Date): string {
 /**
  * Format a date and returns only Weekday
  */
-export function formatDateForWeekday(date: Date): string {
+export function formatDateForWeekdayOnDesktop(date: Date): string {
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long' };
+    return date.toLocaleDateString('en-US', options);
+}
+export function formatDateForWeekdayOnMobile(date: Date): string {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short' };
     return date.toLocaleDateString('en-US', options);
 }
