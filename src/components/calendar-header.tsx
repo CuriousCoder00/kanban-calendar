@@ -20,7 +20,7 @@ const CalendarHeader = () => {
     <header className="sticky top-0 z-10 flex flex-col items-start justify-start md:p-4 p-2 bg-gradient-header w-full">
       <div className="flex items-center max-lg:justify-between w-full">
         <h1 className="text-white font-bold text-lg">{currentMonthAndYear}</h1>
-        <div className="flex justify-center items-center gap-0 lg:hidden">
+        <div className="flex justify-center items-center gap-0 md:hidden">
           <Button
             variant="ghost"
             size="icon"
@@ -42,7 +42,7 @@ const CalendarHeader = () => {
       <div className="flex justify-center items-center w-full gap-1 h-full">
         <Button
           variant="ghost"
-          className="text-white hover:bg-white/20 max-lg:hidden flex items-center justify-center px-1 h-full rounded-none"
+          className="text-white hover:bg-white/20 max-md:hidden flex items-center justify-center px-1 h-full rounded-none"
           onClick={() => calendar.goToPreviousWeek()}
         >
           <ChevronLeft className="h-5 w-5" />
@@ -87,7 +87,7 @@ const CalendarHeader = () => {
         </div>
         <Button
           variant="ghost"
-          className="text-white hover:bg-white/20 max-lg:hidden flex items-center justify-center px-1 rounded-none min-h-full h-full"
+          className="text-white hover:bg-white/20 max-md:hidden flex items-center justify-center px-1 rounded-none min-h-full h-full"
           onClick={() => calendar.goToNextWeek()}
         >
           <ChevronRight className="h-5 w-5" />
