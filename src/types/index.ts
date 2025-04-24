@@ -9,3 +9,15 @@ export interface Event {
 export interface EventsByDate {
     [date: string]: Event[];
 }
+
+export interface CalendarContextType {
+    currentDate: Date;
+    selectedDate: Date;
+    weekDates: Date[];
+    isMobile: boolean;
+    goToNextDay: () => void;
+    goToPreviousDay: () => void;
+    goToNextWeek: () => void;
+    goToPreviousWeek: () => void;
+    goToDate: (date: Date) => void;
+}
