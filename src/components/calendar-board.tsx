@@ -8,10 +8,11 @@ import { formatDate } from "@/lib/date-utils";
 const CalendarBoard = () => {
   const calendar = useCalendar();
   return (
-    <div className="flex h-full overflow-x-auto">
+    <div className="flex overflow-x-auto">
       {calendar.weekDates.map((date) => {
         const dateStr = formatDate(date);
-        return <DayCol key={dateStr} date={date} />;
+        const eventsForDate = calendar.events[dateStr] || [];
+        return <DayCol key={dateStr} date={date} events={eventsForDate} />;
       })}
     </div>
   );

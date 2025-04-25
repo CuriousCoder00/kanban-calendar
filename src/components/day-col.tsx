@@ -1,17 +1,14 @@
 "use client";
 import useCalendar from "@/hooks/use-calendar";
-import { formatDateForDisplay } from "@/lib/date-utils";
+import { formatDate, formatDateForDisplay } from "@/lib/date-utils";
 import { DayColProps } from "@/types";
 import React from "react";
+import EventCard from "./event-card";
 
-const DayCol = ({ date }: DayColProps) => {
+const DayCol = ({ date, events }: DayColProps) => {
   const calendar = useCalendar();
   return (
-    <div
-      className={`flex flex-col h-full ${
-        calendar.isMobile ? "w-full" : "flex-1"
-      }`}
-    >
+    <div className={`flex flex-col ${calendar.isMobile ? "w-full" : "flex-1"}`}>
       <div
         className={`p-2 border-b max-md:hidden ${
           date.getTime() === calendar.selectedDate.getTime()
@@ -21,8 +18,18 @@ const DayCol = ({ date }: DayColProps) => {
       >
         <h2 className="font-medium">{formatDateForDisplay(date)}</h2>
       </div>
-      <div className="flex items-center justify-start md:hidden w-full">
-        <h2 className="font-medium">{formatDateForDisplay(date)}</h2>
+      <div className={`flex-1 p-2 overflow-y-auto no-scrollbar`}>
+        <div className="flex flex-col gap-4">
+          {events.length > 0 ? (
+            events.map((event) => (
+              <EventCard key={event.id} event={event} date={formatDate(date)} />
+            ))
+          ) : (
+            <div className="text-center text-gray-400 py-8">
+              No events for this day
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

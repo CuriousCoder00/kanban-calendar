@@ -9,7 +9,7 @@ export default function Home() {
     <CalendarProvider>
       <div className="bg-gradient-subtle flex flex-col min-h-dvh w-full">
         <CalendarHeader />
-        <div className="flex-1 overflow-hidden px-10">
+        <div className="flex-1 overflow-hidden px-10 min-h-full">
           <CalendarBoard />
         </div>
       </div>

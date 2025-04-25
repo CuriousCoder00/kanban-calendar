@@ -1,7 +1,7 @@
 import { EventsByDate } from "@/types";
 
-const events: EventsByDate = {
-    "2024-04-24": [
+const event_data: EventsByDate = {
+    "2025-04-24": [
         {
             id: "event-1",
             title: "Coffee with Alex",
@@ -21,7 +21,7 @@ const events: EventsByDate = {
             time: "02:00 PM",
         },
     ],
-    "2024-04-25": [
+    "2025-04-25": [
         {
             id: "event-3",
             title: "Yoga Session",
@@ -41,7 +41,7 @@ const events: EventsByDate = {
             time: "03:30 PM",
         },
     ],
-    "2024-04-26": [
+    "2025-04-26": [
         {
             id: "event-5",
             title: "Client Meeting",
@@ -54,4 +54,4 @@ const events: EventsByDate = {
         },
     ],
 };
-export default events;
+export default event_data;

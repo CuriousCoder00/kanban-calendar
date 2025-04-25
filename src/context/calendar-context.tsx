@@ -2,8 +2,8 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import * as DateUtils from "@/lib/date-utils";
-import { CalendarContextType } from "@/types/index";
-
+import { CalendarContextType, Event, EventsByDate } from "@/types/index";
+import event_data from "@/constants/mock-data"
 export const CalendarContext = createContext<CalendarContextType | undefined>(
   undefined
 );
@@ -19,6 +19,8 @@ export const CalendarProvider = ({
   const [weekDates, setWeekDates] = useState<Date[]>(
     DateUtils.getDatesInWeek(new Date())
   );
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [events, setEvents] = useState<EventsByDate>(event_data);
 
   // Handle window resize to check if device is mobile
   useEffect(() => {
@@ -76,7 +78,10 @@ export const CalendarProvider = ({
     currentDate,
     selectedDate,
     weekDates,
+    events,
     isMobile,
+    selectedEvent,
+    setSelectedEvent,
     goToNextDay,
     goToPreviousDay,
     goToNextWeek,
