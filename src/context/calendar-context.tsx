@@ -82,6 +82,7 @@ export const CalendarProvider = ({
     isMobile,
     selectedEvent,
     setSelectedEvent,
+    setEvents,
     goToNextDay,
     goToPreviousDay,
     goToNextWeek,

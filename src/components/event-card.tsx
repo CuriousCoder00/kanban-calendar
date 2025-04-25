@@ -4,7 +4,7 @@ import { EventCardProps } from "@/types";
 import React from "react";
 import { motion } from "motion/react";
 import useCalendar from "@/hooks/use-calendar";
-const EventCard = ({ event, date }: EventCardProps) => {
+const EventCard = ({ event }: EventCardProps) => {
   const calendar = useCalendar();
 
   const handleClick = () => {

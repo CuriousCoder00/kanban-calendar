@@ -22,6 +22,7 @@ export interface CalendarContextType {
     isMobile: boolean;
     selectedEvent: Event | null;
     events: EventsByDate;
+    setEvents: (events: EventsByDate) => void;
     setSelectedEvent: (event: Event | null) => void;
     goToNextDay: () => void;
     goToPreviousDay: () => void;
