@@ -47,14 +47,14 @@ const CalendarHeader = () => {
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
-        <div className="grid grid-cols-7 mt-2 w-full">
+        <div className="grid grid-cols-7 mt-2 w-full gap-2">
           {calendar.weekDates.map((date, index) =>
             calendar.isMobile ? (
               <Button
                 key={index}
                 variant="ghost"
                 size="icon"
-                className={`w-full h-full flex flex-col items-start justify-start gap-0 p-2 rounded-none whitespace-nowrap text-white/100 hover:text-white ${
+                className={`w-full h-full flex flex-col items-center justify-center gap-0 p-2 rounded-md whitespace-nowrap text-white/100 hover:text-white ${
                   date.getTime() === calendar.selectedDate.getTime()
                     ? "bg-gradient-active text-white shadow-md shadow-black/30 hover:bg-white/20"
                     : "text-white hover:bg-white/20 hover:shadow-md hover:shadow-black/20 transition-all duration-200 bg-white/10"
@@ -68,7 +68,7 @@ const CalendarHeader = () => {
               <Button
                 key={index}
                 variant="ghost"
-                className={`h-full w-full rounded-none hover:text-white flex items-start justify-center text-start flex-col gap-0 ${
+                className={`h-full w-full rounded-md hover:text-white flex items-start justify-center text-start flex-col gap-0 ${
                   date.getTime() === calendar.selectedDate.getTime()
                     ? "bg-gradient-active text-white shadow-md shadow-black/30 hover:bg-white/20"
                     : "text-white hover:bg-white/20 hover:shadow-md hover:shadow-black/20 transition-all duration-200 bg-white/10"
