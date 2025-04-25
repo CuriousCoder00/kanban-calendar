@@ -4,7 +4,7 @@ import { formatDate, formatDateForDisplay } from "@/lib/date-utils";
 import { DayColProps } from "@/types";
 import React from "react";
 import EventCard from "./event-card";
-
+import { motion } from "motion/react";
 const DayCol = ({ date, events }: DayColProps) => {
   const calendar = useCalendar();
   return (
@@ -25,9 +25,13 @@ const DayCol = ({ date, events }: DayColProps) => {
               <EventCard key={event.id} event={event} date={formatDate(date)} />
             ))
           ) : (
-            <div className="text-center text-gray-400 py-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center text-gray-400 py-8"
+            >
               No events for this day
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

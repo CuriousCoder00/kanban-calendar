@@ -2,6 +2,7 @@
 
 import CalendarBoard from "@/components/calendar-board";
 import CalendarHeader from "@/components/calendar-header";
+import EventDetailCard from "@/components/event-details-card";
 import { CalendarProvider } from "@/context/calendar-context";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
         <div className="flex-1 overflow-hidden px-10 min-h-full">
           <CalendarBoard />
         </div>
+        <EventDetailCard />
       </div>
     </CalendarProvider>
   );

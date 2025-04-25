@@ -3,10 +3,17 @@
 import { EventCardProps } from "@/types";
 import React from "react";
 import { motion } from "motion/react";
+import useCalendar from "@/hooks/use-calendar";
 const EventCard = ({ event, date }: EventCardProps) => {
+  const calendar = useCalendar();
+
+  const handleClick = () => {
+    calendar.setSelectedEvent(event);
+  };
   return (
     <motion.div
       className={`bg-white rounded-lg shadow-md overflow-hidden cursor-grab hover:shadow-md hover:shadow-black/20`}
+      onClick={handleClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.95 }}
       layoutId={`event-${event.id}`}
