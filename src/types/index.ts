@@ -10,6 +10,10 @@ export interface EventsByDate {
     [date: string]: Event[];
 }
 
+export interface DayColProps {
+    date: Date;
+}
+
 export interface CalendarContextType {
     currentDate: Date;
     selectedDate: Date;
