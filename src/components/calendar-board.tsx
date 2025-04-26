@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 
 const HOLD_DURATION = 1500; // 1.5 seconds
 const EDGE_THRESHOLD = 40; // px
+const MOBILE_EDGE_THRESHOLD = 1; // px
 
 // Helper function to sort events by time
 const sortEventsByTime = (events: Event[]): Event[] => {
@@ -38,15 +39,19 @@ const CalendarBoard = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeDate, setActiveDate] = useState<string | null>(null);
-  const [edgeState, setEdgeState] = useState<'left' | 'right' | null>(null);
+  const [edgeState, setEdgeState] = useState<"left" | "right" | null>(null);
+
+  const FINAL_THRESHOLD = calendar.isMobile
+    ? MOBILE_EDGE_THRESHOLD
+    : EDGE_THRESHOLD;
 
   const edgeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 200, // Reduced from 1500ms to 250ms for better responsiveness
-        tolerance: 1,
+        delay: 100, // Reduced from 1500ms to 250ms for better responsiveness
+        tolerance: 5,
       },
     })
   );
@@ -79,23 +84,31 @@ const CalendarBoard = () => {
     const pointerX =
       event.delta.x + (event.active.rect.current?.translated?.left ?? 0);
 
-    if (pointerX <= EDGE_THRESHOLD) {
-      setEdgeState('left');
+    if (pointerX <= FINAL_THRESHOLD) {
+      setEdgeState("left");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
           calendar.goToPreviousDay();
           clearEdgeTimer();
-          if (typeof navigator !== "undefined" && navigator.vibrate)
+          if (
+            typeof navigator !== "undefined" &&
+            navigator.vibrate &&
+            calendar.isMobile
+          )
             navigator.vibrate(30); // Haptic feedback
         }, HOLD_DURATION);
       }
-    } else if (pointerX >= window.innerWidth - EDGE_THRESHOLD) {
-      setEdgeState('right');
+    } else if (pointerX >= window.innerWidth - FINAL_THRESHOLD) {
+      setEdgeState("right");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
           calendar.goToNextDay();
           clearEdgeTimer();
-          if (typeof navigator !== "undefined" && navigator.vibrate)
+          if (
+            typeof navigator !== "undefined" &&
+            navigator.vibrate &&
+            calendar.isMobile
+          )
             navigator.vibrate(30); // Haptic feedback
         }, HOLD_DURATION);
       }
@@ -154,13 +167,16 @@ const CalendarBoard = () => {
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
+      id="calendar-dnd-context"
     >
-      <div 
-        ref={boardRef} 
+      <div
+        ref={boardRef}
         className={cn(
           "flex overflow-x-auto h-full relative",
-          edgeState === 'left' && "before:content-[''] before:absolute before:left-0 before:top-0 before:w-1 before:h-full before:bg-blue-500/70 before:shadow-[0_0_10px_rgba(59,130,246,0.5)] before:transition-all before:duration-300",
-          edgeState === 'right' && "after:content-[''] after:absolute after:right-0 after:top-0 after:w-1 after:h-full after:bg-blue-500/70 after:shadow-[0_0_10px_rgba(59,130,246,0.5)] after:transition-all after:duration-300"
+          edgeState === "left" &&
+            "before:content-[''] before:absolute before:left-0 before:top-0 before:w-1 before:h-full before:bg-blue-500/70 before:shadow-[0_0_10px_rgba(59,130,246,0.5)] before:transition-all before:duration-300",
+          edgeState === "right" &&
+            "after:content-[''] after:absolute after:right-0 after:top-0 after:w-1 after:h-full after:bg-blue-500/70 after:shadow-[0_0_10px_rgba(59,130,246,0.5)] after:transition-all after:duration-300"
         )}
       >
         {calendar.weekDates.map((date) => {

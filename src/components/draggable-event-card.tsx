@@ -22,7 +22,7 @@ const DraggableEventCard = ({ event, date }: DraggableEventCardProps) => {
     });
 
   useEffect(() => {
-    if (isDragging && typeof navigator !== "undefined" && navigator.vibrate) {
+    if (isDragging && typeof navigator !== "undefined" && navigator.vibrate && calendar.isMobile) {
       navigator.vibrate(30); // Subtle vibration feedback
     }
   }, [isDragging]);
