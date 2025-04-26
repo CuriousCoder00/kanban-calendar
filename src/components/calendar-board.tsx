@@ -96,9 +96,9 @@ const CalendarBoard = () => {
       setEdgeState("left");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
-          calendar.isMobile
-            ? calendar.goToPreviousDay()
-            : calendar.goToPreviousWeek();
+          if (calendar.isMobile) {
+            calendar.goToPreviousDay();
+          } else calendar.goToPreviousWeek();
           clearEdgeTimer();
           if (
             typeof navigator !== "undefined" &&
@@ -112,7 +112,9 @@ const CalendarBoard = () => {
       setEdgeState("right");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
-          calendar.isMobile ? calendar.goToNextDay() : calendar.goToNextWeek();
+          if (calendar.isMobile) {
+            calendar.goToNextDay();
+          } else calendar.goToNextWeek();
           clearEdgeTimer();
           if (
             typeof navigator !== "undefined" &&
