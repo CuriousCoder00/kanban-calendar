@@ -75,6 +75,10 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  body.dragging {
+    overflow: hidden;
+    touch-action: none; /* Very important for touch devices */
+  }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

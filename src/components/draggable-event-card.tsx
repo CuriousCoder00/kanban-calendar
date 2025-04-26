@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { DraggableEventCardProps } from "@/types";
 import { cn } from "@/lib/utils";
@@ -19,12 +19,6 @@ const DraggableEventCard = ({ event, date }: DraggableEventCardProps) => {
         date,
       },
     });
-
-  useEffect(() => {
-    if (isDragging && typeof navigator !== "undefined" && navigator.vibrate && calendar.isMobile) {
-      navigator.vibrate(30); // Subtle vibration feedback
-    }
-  }, [isDragging]);
 
   const handleClick = (e: React.MouseEvent) => {
     if (!isDragging) {

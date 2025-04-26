@@ -74,6 +74,10 @@ const CalendarBoard = () => {
     const { active } = event;
     setActiveId(active.id as string);
 
+    if (typeof document !== "undefined") {
+      document.body.classList.add("dragging");
+    }
+
     // Find event by ID
     for (const date in calendar.events) {
       const found = calendar.events[date].find(
@@ -128,6 +132,11 @@ const CalendarBoard = () => {
   const handleDragEnd = (event: DragEndEvent) => {
     clearEdgeTimer();
     setEdgeState(null);
+
+    if (typeof document !== "undefined") {
+      document.body.classList.remove("dragging");
+    }
+
     const { active, over } = event;
     if (!over || active.id === over.id) {
       resetActive();
@@ -195,7 +204,7 @@ const CalendarBoard = () => {
         })}
       </div>
 
-      <DragOverlay>
+      <DragOverlay style={{ zIndex: 1000, touchAction: "none" }}>
         {activeId && activeEvent && activeDate ? (
           <EventCard event={activeEvent} date={activeDate} isDragging={true} />
         ) : null}
