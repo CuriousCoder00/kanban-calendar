@@ -17,6 +17,7 @@ import DayCol from "./day-col";
 import { formatDate } from "@/lib/date-utils";
 import { Event } from "@/types";
 import EventCard from "./event-card";
+import { cn } from "@/lib/utils";
 
 const HOLD_DURATION = 1500; // 1.5 seconds
 const EDGE_THRESHOLD = 40; // px
@@ -37,6 +38,7 @@ const CalendarBoard = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeDate, setActiveDate] = useState<string | null>(null);
+  const [edgeState, setEdgeState] = useState<'left' | 'right' | null>(null);
 
   const edgeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -78,6 +80,7 @@ const CalendarBoard = () => {
       event.delta.x + (event.active.rect.current?.translated?.left ?? 0);
 
     if (pointerX <= EDGE_THRESHOLD) {
+      setEdgeState('left');
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
           calendar.goToPreviousDay();
@@ -87,6 +90,7 @@ const CalendarBoard = () => {
         }, HOLD_DURATION);
       }
     } else if (pointerX >= window.innerWidth - EDGE_THRESHOLD) {
+      setEdgeState('right');
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
           calendar.goToNextDay();
@@ -96,12 +100,14 @@ const CalendarBoard = () => {
         }, HOLD_DURATION);
       }
     } else {
+      setEdgeState(null);
       clearEdgeTimer();
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     clearEdgeTimer();
+    setEdgeState(null);
     const { active, over } = event;
     if (!over || active.id === over.id) {
       resetActive();
@@ -149,7 +155,14 @@ const CalendarBoard = () => {
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
     >
-      <div ref={boardRef} className="flex overflow-x-auto h-full">
+      <div 
+        ref={boardRef} 
+        className={cn(
+          "flex overflow-x-auto h-full relative",
+          edgeState === 'left' && "before:content-[''] before:absolute before:left-0 before:top-0 before:w-1 before:h-full before:bg-blue-500/70 before:shadow-[0_0_10px_rgba(59,130,246,0.5)] before:transition-all before:duration-300",
+          edgeState === 'right' && "after:content-[''] after:absolute after:right-0 after:top-0 after:w-1 after:h-full after:bg-blue-500/70 after:shadow-[0_0_10px_rgba(59,130,246,0.5)] after:transition-all after:duration-300"
+        )}
+      >
         {calendar.weekDates.map((date) => {
           const dateStr = formatDate(date);
           const eventsForDate = sortEventsByTime(
