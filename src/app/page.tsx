@@ -8,9 +8,9 @@ import { CalendarProvider } from "@/context/calendar-context";
 export default function Home() {
   return (
     <CalendarProvider>
-      <div className="bg-gradient-subtle flex flex-col min-h-dvh w-full">
+      <div className="flex flex-col h-dvh w-dvw bg-gradient-subtle">
         <CalendarHeader />
-        <div className="flex-1 overflow-hidden min-h-full">
+        <div className="flex-1 overflow-hidden">
           <CalendarBoard />
         </div>
         <EventDetailCard />

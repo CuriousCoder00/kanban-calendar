@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { DraggableEventCardProps } from "@/types";
 import { cn } from "@/lib/utils";
 import useCalendar from "@/hooks/use-calendar";
 import EventCard from "./event-card";
+import { motion } from "framer-motion";
 
 const DraggableEventCard = ({ event, date }: DraggableEventCardProps) => {
   const calendar = useCalendar();
@@ -20,6 +21,12 @@ const DraggableEventCard = ({ event, date }: DraggableEventCardProps) => {
       },
     });
 
+  useEffect(() => {
+    if (isDragging && typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(30); // Subtle vibration feedback
+    }
+  }, [isDragging]);
+
   const handleClick = (e: React.MouseEvent) => {
     if (!isDragging) {
       e.stopPropagation();
@@ -32,14 +39,21 @@ const DraggableEventCard = ({ event, date }: DraggableEventCardProps) => {
   };
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
       className={cn(
         "transition-all duration-200",
-        isDragging && "opacity-0 shadow-lg scale-50 rotate-1"
+        isDragging && "opacity-0 shadow-lg scale-50 rotate-3"
       )}
       onClick={handleClick}
+      animate={isDragging ? {
+        x: [0, -2, 2, -1, 1, 0],
+        transition: {
+          duration: 0.3,
+          ease: "easeInOut"
+        }
+      } : {}}
     >
       <div
         {...attributes}
@@ -52,7 +66,7 @@ const DraggableEventCard = ({ event, date }: DraggableEventCardProps) => {
       >
         <EventCard date={date} event={event} isDragging={isDragging} />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
