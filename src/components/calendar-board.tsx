@@ -24,6 +24,8 @@ const HOLD_DURATION = 1500; // 1.5 seconds
 const DESKTOP_EDGE_THRESHOLD = 40; // px
 const MOBILE_EDGE_THRESHOLD_RIGHT = 720; // px
 const MOBILE_EDGE_THRESHOLD_LEFT = 1;
+let FINAL_LEFT_EDGE_THRESHOLD = 0;
+let FINAL_RIGHT_EDGE_THRESHOLD = 0;
 // Helper function to sort events by time
 const sortEventsByTime = (events: Event[]): Event[] => {
   return [...events].sort((a, b) => {
@@ -36,19 +38,19 @@ const sortEventsByTime = (events: Event[]): Event[] => {
 const CalendarBoard = () => {
   const calendar = useCalendar();
   const boardRef = useRef<HTMLDivElement>(null);
-
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeDate, setActiveDate] = useState<string | null>(null);
   const [edgeState, setEdgeState] = useState<"left" | "right" | null>(null);
 
-  const FINAL_LEFT_EDGE_THRESHOLD = calendar.isMobile
-    ? MOBILE_EDGE_THRESHOLD_LEFT
-    : DESKTOP_EDGE_THRESHOLD;
-  const FINAL_RIGHT_EDGE_THRESHOLD = calendar.isMobile
-    ? window.innerWidth - MOBILE_EDGE_THRESHOLD_RIGHT
-    : window.innerWidth - DESKTOP_EDGE_THRESHOLD;
-
+  if (typeof window !== "undefined") {
+    FINAL_LEFT_EDGE_THRESHOLD = calendar.isMobile
+      ? MOBILE_EDGE_THRESHOLD_LEFT
+      : DESKTOP_EDGE_THRESHOLD;
+    FINAL_RIGHT_EDGE_THRESHOLD = calendar.isMobile
+      ? window.innerWidth - MOBILE_EDGE_THRESHOLD_RIGHT
+      : window.innerWidth - DESKTOP_EDGE_THRESHOLD;
+  }
   const edgeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isTouchDevice = () => {
