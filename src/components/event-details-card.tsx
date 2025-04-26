@@ -42,7 +42,8 @@ const EventDetailCard = () => {
                 height={500}
                 src={calendar.selectedEvent.imageUrl}
                 alt={calendar.selectedEvent.title}
-                className="w-full h-full object-cover"
+                priority
+                className="w-full h-full rounded-lg object-cover"
               />
               <div className="absolute top-4 right-4 bg-gradient-active text-white text-sm font-medium px-3 py-1 rounded-full">
                 {calendar.selectedEvent.time}

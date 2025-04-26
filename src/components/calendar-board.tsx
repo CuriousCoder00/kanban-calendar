@@ -11,6 +11,7 @@ import {
   DragEndEvent,
   DragMoveEvent,
   DragOverlay,
+  TouchSensor,
 } from "@dnd-kit/core";
 import useCalendar from "@/hooks/use-calendar";
 import DayCol from "./day-col";
@@ -50,7 +51,13 @@ const CalendarBoard = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 100, // Reduced from 1500ms to 250ms for better responsiveness
+        delay: 100,
+        tolerance: 5,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 100,
         tolerance: 5,
       },
     })
