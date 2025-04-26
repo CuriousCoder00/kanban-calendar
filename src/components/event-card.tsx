@@ -4,6 +4,7 @@ import { EventCardProps } from "@/types";
 import React from "react";
 import { motion } from "motion/react";
 import useCalendar from "@/hooks/use-calendar";
+import Image from "next/image";
 const EventCard = ({ event }: EventCardProps) => {
   const calendar = useCalendar();
 
@@ -12,7 +13,7 @@ const EventCard = ({ event }: EventCardProps) => {
   };
   return (
     <motion.div
-      className={`bg-white rounded-lg shadow-md overflow-hidden cursor-grab hover:shadow-md hover:shadow-black/20`}
+      className={`bg-white rounded-lg shadow-md overflow-hidden cursor-grab hover:shadow-md hover:shadow-black/20 h-full`}
       onClick={handleClick}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.95 }}
@@ -22,9 +23,11 @@ const EventCard = ({ event }: EventCardProps) => {
       transition={{ duration: 0.2 }}
     >
       <div className="md:h-24 sm:h-44 h-24 w-full relative">
-        <img
+        <Image
           src={event.imageUrl}
           alt={event.title}
+          width={500}
+          height={500}
           className="w-full h-full object-cover"
         />
         <div className="absolute top-2 right-2 bg-gradient-active text-white text-xs font-medium px-2 py-1 rounded-full">
@@ -32,7 +35,7 @@ const EventCard = ({ event }: EventCardProps) => {
         </div>
       </div>
       <div className="p-3">
-        <h3 className="font-medium text-gray-800">{event.title}</h3>
+        <h3 className="font-medium text-gray-800 line-clamp-1">{event.title}</h3>
         <p className="text-sm text-gray-500 line-clamp-2 mt-1">
           {event.description}
         </p>

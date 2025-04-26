@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useCalendar from "@/hooks/use-calendar";
+import Image from "next/image";
 
 const EventDetail = () => {
   const calendar = useCalendar();
@@ -36,7 +37,9 @@ const EventDetail = () => {
             layoutId={`event-${calendar.selectedEvent.id}`}
           >
             <div className="relative h-64 w-full">
-              <img
+              <Image
+                width={500}
+                height={500}
                 src={calendar.selectedEvent.imageUrl}
                 alt={calendar.selectedEvent.title}
                 className="w-full h-full object-cover"
