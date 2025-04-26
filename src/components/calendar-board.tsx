@@ -11,6 +11,7 @@ import {
   DragEndEvent,
   DragMoveEvent,
   DragOverlay,
+  TouchSensor,
 } from "@dnd-kit/core";
 import useCalendar from "@/hooks/use-calendar";
 import DayCol from "./day-col";
@@ -20,9 +21,9 @@ import EventCard from "./event-card";
 import { cn } from "@/lib/utils";
 
 const HOLD_DURATION = 1500; // 1.5 seconds
-const EDGE_THRESHOLD = 40; // px
-const MOBILE_EDGE_THRESHOLD = 1; // px
-
+const DESKTOP_EDGE_THRESHOLD = 40; // px
+const MOBILE_EDGE_THRESHOLD_RIGHT = 720; // px
+const MOBILE_EDGE_THRESHOLD_LEFT = 1;
 // Helper function to sort events by time
 const sortEventsByTime = (events: Event[]): Event[] => {
   return [...events].sort((a, b) => {
@@ -41,21 +42,29 @@ const CalendarBoard = () => {
   const [activeDate, setActiveDate] = useState<string | null>(null);
   const [edgeState, setEdgeState] = useState<"left" | "right" | null>(null);
 
-  const FINAL_THRESHOLD = calendar.isMobile
-    ? MOBILE_EDGE_THRESHOLD
-    : EDGE_THRESHOLD;
+  const FINAL_LEFT_EDGE_THRESHOLD = calendar.isMobile
+    ? MOBILE_EDGE_THRESHOLD_LEFT
+    : DESKTOP_EDGE_THRESHOLD;
+  const FINAL_RIGHT_EDGE_THRESHOLD = calendar.isMobile
+    ? window.innerWidth - MOBILE_EDGE_THRESHOLD_RIGHT
+    : window.innerWidth - DESKTOP_EDGE_THRESHOLD;
 
   const edgeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const isTouchDevice = () => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(pointer: coarse)").matches;
+    }
+    return false;
+  };
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(isTouchDevice() ? TouchSensor : PointerSensor, {
       activationConstraint: {
         delay: 150,
         tolerance: 8,
-        delayMeasurementConstraint: {
-          delay: 150,
-          tolerance: 5,
-        },
+      },
+      delayMeasureConstraint: {
+        timeout: 150,
       },
     })
   );
@@ -91,8 +100,7 @@ const CalendarBoard = () => {
   const handleDragMove = (event: DragMoveEvent) => {
     const pointerX =
       event.delta.x + (event.active.rect.current?.translated?.left ?? 0);
-
-    if (pointerX <= FINAL_THRESHOLD) {
+    if (pointerX <= FINAL_LEFT_EDGE_THRESHOLD) {
       setEdgeState("left");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
@@ -108,7 +116,7 @@ const CalendarBoard = () => {
             navigator.vibrate(30); // Haptic feedback
         }, HOLD_DURATION);
       }
-    } else if (pointerX >= window.innerWidth - FINAL_THRESHOLD) {
+    } else if (pointerX >= FINAL_RIGHT_EDGE_THRESHOLD) {
       setEdgeState("right");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
@@ -205,7 +213,7 @@ const CalendarBoard = () => {
         })}
       </div>
 
-      <DragOverlay style={{ zIndex: 1000, touchAction: "none" }}>
+      <DragOverlay>
         {activeId && activeEvent && activeDate ? (
           <EventCard event={activeEvent} date={activeDate} isDragging={true} />
         ) : null}

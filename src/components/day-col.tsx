@@ -31,7 +31,6 @@ const DayCol = ({ date, events }: DayColProps) => {
 
   return (
     <div
-      ref={setNodeRef}
       className={cn(
         "flex flex-col h-full",
         calendar.isMobile ? "w-full" : "flex-1",
@@ -64,7 +63,7 @@ const DayCol = ({ date, events }: DayColProps) => {
           isOver && "bg-blue-100/30 border border-dashed border-blue-500/50"
         )}
       >
-        <div className="flex flex-col gap-4">
+        <div ref={setNodeRef} className="flex flex-col gap-4">
           {events.length > 0 ? (
             events.map((event) => (
               <DraggableEventCard
