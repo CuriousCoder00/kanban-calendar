@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { formatDate, formatDateForDisplay } from "@/lib/date-utils";
 import { DayColProps } from "@/types";
