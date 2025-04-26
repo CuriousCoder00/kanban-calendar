@@ -21,7 +21,7 @@ const EventCard = ({ event }: EventCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="h-24 w-full relative">
+      <div className="md:h-24 sm:h-44 h-24 w-full relative">
         <img
           src={event.imageUrl}
           alt={event.title}
