@@ -51,14 +51,12 @@ const CalendarBoard = () => {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 100,
-        tolerance: 5,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 100,
-        tolerance: 5,
+        delay: 150,
+        tolerance: 8,
+        delayMeasurementConstraint: {
+          delay: 150,
+          tolerance: 5,
+        },
       },
     })
   );
@@ -99,7 +97,9 @@ const CalendarBoard = () => {
       setEdgeState("left");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
-          calendar.goToPreviousDay();
+          calendar.isMobile
+            ? calendar.goToPreviousDay()
+            : calendar.goToPreviousWeek();
           clearEdgeTimer();
           if (
             typeof navigator !== "undefined" &&
@@ -113,7 +113,7 @@ const CalendarBoard = () => {
       setEdgeState("right");
       if (!edgeTimerRef.current) {
         edgeTimerRef.current = setTimeout(() => {
-          calendar.goToNextDay();
+          calendar.isMobile ? calendar.goToNextDay() : calendar.goToNextWeek();
           clearEdgeTimer();
           if (
             typeof navigator !== "undefined" &&
