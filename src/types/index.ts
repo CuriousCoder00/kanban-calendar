@@ -34,4 +34,10 @@ export interface CalendarContextType {
 export interface EventCardProps {
     event: Event;
     date: string;
+    isDragging?: boolean;
+}
+
+export interface DraggableEventCardProps {
+    event: Event;
+    date: string;
 }
