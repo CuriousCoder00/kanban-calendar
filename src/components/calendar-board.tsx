@@ -11,7 +11,6 @@ import {
   DragEndEvent,
   DragMoveEvent,
   DragOverlay,
-  TouchSensor,
 } from "@dnd-kit/core";
 import useCalendar from "@/hooks/use-calendar";
 import DayCol from "./day-col";
