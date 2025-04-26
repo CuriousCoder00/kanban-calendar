@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useCalendar from "@/hooks/use-calendar";
 import Image from "next/image";
 
-const EventDetail = () => {
+const EventDetailCard = () => {
   const calendar = useCalendar();
 
   if (!calendar.selectedEvent) return null;
@@ -77,4 +77,4 @@ const EventDetail = () => {
   );
 };
 
-export default EventDetail;
+export default EventDetailCard;
