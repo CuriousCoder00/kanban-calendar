@@ -21,7 +21,6 @@ import { Event } from "@/types";
 import EventCard from "./event-card";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
 
 const HOLD_DURATION = 1500; // 1.5 seconds
 const EDGE_THRESHOLD = 40; // You can adjust this!
