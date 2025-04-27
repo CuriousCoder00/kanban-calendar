@@ -21,6 +21,7 @@ import { Event } from "@/types";
 import EventCard from "./event-card";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
+import { useDrag } from "@use-gesture/react";
 
 const HOLD_DURATION = 1500; // 1.5 seconds
 const EDGE_THRESHOLD = 40; // You can adjust this!
@@ -36,6 +37,7 @@ const sortEventsByTime = (events: Event[]): Event[] => {
 
 const CalendarBoard = () => {
   const calendar = useCalendar();
+  console.log("Is mobile?", calendar.isMobile);
   const boardRef = useRef<HTMLDivElement>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
@@ -199,6 +201,18 @@ const CalendarBoard = () => {
     setHasSwitchedEdge(false); // Reset switching for next drag
   };
 
+  const bindSwipe = useDrag(
+    ({ down, movement: [mx], direction: [xDir], velocity: [vx] }) => {
+      if (!down && vx > 0.2 && Math.abs(mx) > 10) {
+        if (xDir > 0) {
+          calendar.goToPreviousDay();
+        } else {
+          calendar.goToNextDay();
+        }
+      }
+    }
+  );
+  
   return (
     <DndContext
       sensors={sensors}
@@ -210,8 +224,10 @@ const CalendarBoard = () => {
     >
       <div
         ref={boardRef}
+        {...(calendar.isMobile ? bindSwipe() : {})}
+        style={{ touchAction: "none" }} // Prevent default touch actions
         className={cn(
-          "flex md:overflow-x-auto overflow-hidden max-md:min-w-dvw h-full relative",
+          "flex md:overflow-x-auto overflow-hidden max-md:min-w-dvw h-full w-full relative",
           edgeState === "left" &&
             "before:content-[''] before:absolute before:left-0 before:top-0 before:w-1 before:h-full before:bg-blue-500/70 before:shadow-[0_0_10px_rgba(59,130,246,0.5)] before:transition-all before:duration-300",
           edgeState === "right" &&
