@@ -19,13 +19,11 @@ import { formatDate } from "@/lib/date-utils";
 import { Event } from "@/types";
 import EventCard from "./event-card";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const HOLD_DURATION = 1500; // 1.5 seconds
-const DESKTOP_EDGE_THRESHOLD = 40; // px
-const MOBILE_EDGE_THRESHOLD_RIGHT = 720; // px
-const MOBILE_EDGE_THRESHOLD_LEFT = 1;
-let FINAL_LEFT_EDGE_THRESHOLD = 0;
-let FINAL_RIGHT_EDGE_THRESHOLD = 0;
+const EDGE_THRESHOLD = 40; // You can adjust this!
+
 // Helper function to sort events by time
 const sortEventsByTime = (events: Event[]): Event[] => {
   return [...events].sort((a, b) => {
@@ -42,15 +40,8 @@ const CalendarBoard = () => {
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [activeDate, setActiveDate] = useState<string | null>(null);
   const [edgeState, setEdgeState] = useState<"left" | "right" | null>(null);
+  const [hasSwitchedEdge, setHasSwitchedEdge] = useState(false);
 
-  if (typeof window !== "undefined") {
-    FINAL_LEFT_EDGE_THRESHOLD = calendar.isMobile
-      ? MOBILE_EDGE_THRESHOLD_LEFT
-      : DESKTOP_EDGE_THRESHOLD;
-    FINAL_RIGHT_EDGE_THRESHOLD = calendar.isMobile
-      ? window.innerWidth - MOBILE_EDGE_THRESHOLD_RIGHT
-      : window.innerWidth - DESKTOP_EDGE_THRESHOLD;
-  }
   const edgeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isTouchDevice = () => {
@@ -100,43 +91,63 @@ const CalendarBoard = () => {
   };
 
   const handleDragMove = (event: DragMoveEvent) => {
-    const pointerX =
-      event.delta.x + (event.active.rect.current?.translated?.left ?? 0);
-    if (pointerX <= FINAL_LEFT_EDGE_THRESHOLD) {
-      setEdgeState("left");
-      if (!edgeTimerRef.current) {
-        edgeTimerRef.current = setTimeout(() => {
-          if (calendar.isMobile) {
-            calendar.goToPreviousDay();
-          } else calendar.goToPreviousWeek();
+    if (!boardRef.current || !event.active.rect.current?.translated) return;
+
+    const boardRect = boardRef.current.getBoundingClientRect();
+    const activeRect = event.active.rect.current.translated;
+
+    const distanceFromLeft = activeRect.left - boardRect.left;
+    const distanceFromRight = boardRect.right - activeRect.right;
+    const deltaX = event.delta.x;
+
+    if (calendar.isMobile) {
+      // --- Mobile logic: Switch only once ---
+      if (!hasSwitchedEdge) {
+        if (deltaX < 0 && distanceFromLeft <= EDGE_THRESHOLD) {
+          setEdgeState("left");
+          if (!edgeTimerRef.current) {
+            edgeTimerRef.current = setTimeout(() => {
+              calendar.goToPreviousDay();
+              clearEdgeTimer();
+              setHasSwitchedEdge(true); // mark as switched
+            }, HOLD_DURATION);
+          }
+        } else if (deltaX > 0 && distanceFromRight <= EDGE_THRESHOLD) {
+          setEdgeState("right");
+          if (!edgeTimerRef.current) {
+            edgeTimerRef.current = setTimeout(() => {
+              calendar.goToNextDay();
+              clearEdgeTimer();
+              setHasSwitchedEdge(true); // mark as switched
+            }, HOLD_DURATION);
+          }
+        } else {
+          setEdgeState(null);
           clearEdgeTimer();
-          if (
-            typeof navigator !== "undefined" &&
-            navigator.vibrate &&
-            calendar.isMobile
-          )
-            navigator.vibrate(30); // Haptic feedback
-        }, HOLD_DURATION);
-      }
-    } else if (pointerX >= FINAL_RIGHT_EDGE_THRESHOLD) {
-      setEdgeState("right");
-      if (!edgeTimerRef.current) {
-        edgeTimerRef.current = setTimeout(() => {
-          if (calendar.isMobile) {
-            calendar.goToNextDay();
-          } else calendar.goToNextWeek();
-          clearEdgeTimer();
-          if (
-            typeof navigator !== "undefined" &&
-            navigator.vibrate &&
-            calendar.isMobile
-          )
-            navigator.vibrate(30); // Haptic feedback
-        }, HOLD_DURATION);
+        }
       }
     } else {
-      setEdgeState(null);
-      clearEdgeTimer();
+      // --- Desktop logic: Allow multiple switching ---
+      if (distanceFromLeft <= EDGE_THRESHOLD) {
+        setEdgeState("left");
+        if (!edgeTimerRef.current) {
+          edgeTimerRef.current = setTimeout(() => {
+            calendar.goToPreviousWeek();
+            clearEdgeTimer();
+          }, HOLD_DURATION);
+        }
+      } else if (distanceFromRight <= EDGE_THRESHOLD) {
+        setEdgeState("right");
+        if (!edgeTimerRef.current) {
+          edgeTimerRef.current = setTimeout(() => {
+            calendar.goToNextWeek();
+            clearEdgeTimer();
+          }, HOLD_DURATION);
+        }
+      } else {
+        setEdgeState(null);
+        clearEdgeTimer();
+      }
     }
   };
 
@@ -185,6 +196,7 @@ const CalendarBoard = () => {
     setActiveId(null);
     setActiveEvent(null);
     setActiveDate(null);
+    setHasSwitchedEdge(false); // Reset switching for next drag
   };
 
   return (
@@ -217,7 +229,20 @@ const CalendarBoard = () => {
 
       <DragOverlay>
         {activeId && activeEvent && activeDate ? (
-          <EventCard event={activeEvent} date={activeDate} isDragging={true} />
+          <motion.div
+            initial={{ scale: 1, rotate: 0 }}
+            animate={{
+              scale: 0.8,
+              rotate: -1,
+            }}
+            transition={{ type: "spring", stiffness: 100, damping: 10 }}
+          >
+            <EventCard
+              event={activeEvent}
+              date={activeDate}
+              isDragging={true}
+            />
+          </motion.div>
         ) : null}
       </DragOverlay>
     </DndContext>

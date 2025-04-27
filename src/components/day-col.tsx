@@ -63,7 +63,7 @@ const DayCol = ({ date, events }: DayColProps) => {
           isOver && "bg-blue-100/30 border border-dashed border-blue-500/50"
         )}
       >
-        <div ref={setNodeRef} className="flex flex-col gap-4">
+        <div ref={setNodeRef} className="flex flex-col gap-4 h-full">
           {events.length > 0 ? (
             events.map((event) => (
               <DraggableEventCard
@@ -76,7 +76,7 @@ const DayCol = ({ date, events }: DayColProps) => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center text-gray-400 py-8"
+              className="text-center text-gray-400 py-8 h-full"
             >
               No events for this day
             </motion.div>
