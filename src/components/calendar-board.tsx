@@ -20,7 +20,8 @@ import { formatDate } from "@/lib/date-utils";
 import { Event } from "@/types";
 import EventCard from "./event-card";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
 const HOLD_DURATION = 1500; // 1.5 seconds
 const EDGE_THRESHOLD = 40; // You can adjust this!
@@ -42,7 +43,6 @@ const CalendarBoard = () => {
   const [activeDate, setActiveDate] = useState<string | null>(null);
   const [edgeState, setEdgeState] = useState<"left" | "right" | null>(null);
   const [hasSwitchedEdge, setHasSwitchedEdge] = useState(false);
-
   const edgeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isTouchDevice = () => {
@@ -212,7 +212,7 @@ const CalendarBoard = () => {
       <div
         ref={boardRef}
         className={cn(
-          "flex overflow-x-auto h-full relative",
+          "flex md:overflow-x-auto overflow-hidden max-md:min-w-dvw h-full relative",
           edgeState === "left" &&
             "before:content-[''] before:absolute before:left-0 before:top-0 before:w-1 before:h-full before:bg-blue-500/70 before:shadow-[0_0_10px_rgba(59,130,246,0.5)] before:transition-all before:duration-300",
           edgeState === "right" &&
@@ -224,7 +224,27 @@ const CalendarBoard = () => {
           const eventsForDate = sortEventsByTime(
             calendar.events[dateStr] || []
           );
-          return <DayCol key={dateStr} date={date} events={eventsForDate} />;
+          return calendar.isMobile ? (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={calendar.selectedDate.toISOString()} // key to re-trigger animation on date change
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -100, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 400, damping: 40 }}
+                className="absolute inset-0 w-full overflow-hidden"
+              >
+                <DayCol
+                  date={calendar.selectedDate}
+                  events={
+                    calendar.events[formatDate(calendar.selectedDate)] || []
+                  }
+                />
+              </motion.div>
+            </AnimatePresence>
+          ) : (
+            <DayCol key={dateStr} date={date} events={eventsForDate} />
+          );
         })}
       </div>
 

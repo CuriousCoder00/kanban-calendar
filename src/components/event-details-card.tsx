@@ -28,7 +28,7 @@ const EventDetailCard = () => {
           onClick={handleClose}
         >
           <motion.div
-            className="bg-white rounded-lg overflow-hidden w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg overflow-hidden w-full max-w-2xl max-h-[90vh] overflow-y-auto max-md:mx-4"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
