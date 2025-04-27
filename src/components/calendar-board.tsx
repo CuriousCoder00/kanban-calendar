@@ -37,7 +37,6 @@ const sortEventsByTime = (events: Event[]): Event[] => {
 
 const CalendarBoard = () => {
   const calendar = useCalendar();
-  console.log("Is mobile?", calendar.isMobile);
   const boardRef = useRef<HTMLDivElement>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
@@ -212,7 +211,7 @@ const CalendarBoard = () => {
       }
     }
   );
-  
+
   return (
     <DndContext
       sensors={sensors}

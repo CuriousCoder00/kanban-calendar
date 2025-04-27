@@ -12,6 +12,7 @@ import {
   formatDateForWeekdayOnMobile,
 } from "@/lib/date-utils";
 import { cn } from "@/lib/utils";
+import { useDrag } from "@use-gesture/react";
 
 const CalendarHeader = () => {
   const calendar = useCalendar();
@@ -38,6 +39,18 @@ const CalendarHeader = () => {
     }
   }, [calendar.currentDate]);
 
+  const bindSwipe = useDrag(
+    ({ down, movement: [mx], direction: [xDir], velocity: [vx] }) => {
+      if (!down && vx > 0.2 && Math.abs(mx) > 10) {
+        if (xDir > 0) {
+          calendar.goToPreviousWeek();
+        } else {
+          calendar.goToNextWeek();
+        }
+      }
+    }
+  );
+
   return (
     <header className="sticky top-0 z-10 flex flex-col items-start justify-start md:p-4 p-2 bg-gradient-header w-full max-w-[100dvw] overflow-hidden">
       <div className="flex items-center justify-between w-full">
@@ -51,9 +64,7 @@ const CalendarHeader = () => {
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <Button
-            className="text-white bg-white/10 hover:text-white hover:bg-white/20 rounded-none"
-          >
+          <Button className="text-white bg-white/10 hover:text-white hover:bg-white/20 rounded-none">
             {goToButtonValue}
           </Button>
           <Button
@@ -75,7 +86,11 @@ const CalendarHeader = () => {
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
-        <div className="grid grid-cols-7 w-full gap-2">
+        <div
+          {...(calendar.isMobile ? bindSwipe() : {})}
+          style={{ touchAction: "none" }} // Prevent default touch actions
+          className="grid grid-cols-7 w-full gap-2"
+        >
           {calendar.weekDates.map((date, index) => (
             <div key={index} className="relative w-full h-full">
               {date.getTime() === calendar.selectedDate.getTime() && (
