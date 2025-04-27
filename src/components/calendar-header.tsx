@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import useCalendar from "@/hooks/use-calendar";
 import {
   formatDateForDay,
+  formatDateForDisplay,
   formatDateForWeekdayOnDesktop,
   formatDateForWeekdayOnMobile,
 } from "@/lib/date-utils";
@@ -18,6 +19,25 @@ const CalendarHeader = () => {
     month: "long",
     year: "numeric",
   });
+
+  const [goToButtonValue, setGoToButtonValue] = React.useState<string>("Today");
+
+  useEffect(() => {
+    const currentDate = formatDateForDisplay(calendar.currentDate);
+    const today = formatDateForDisplay(new Date());
+    const yesterday = formatDateForDisplay(new Date(Date.now() - 86400000)); // 24 hours in milliseconds
+    const tomorrow = formatDateForDisplay(new Date(Date.now() + 86400000)); // 24 hours in milliseconds
+    if (currentDate === today) {
+      setGoToButtonValue("Today");
+    } else if (currentDate === yesterday) {
+      setGoToButtonValue("Yesterday");
+    } else if (currentDate === tomorrow) {
+      setGoToButtonValue("Tomorrow");
+    } else {
+      setGoToButtonValue(currentDate);
+    }
+  }, [calendar.currentDate]);
+
   return (
     <header className="sticky top-0 z-10 flex flex-col items-start justify-start md:p-4 p-2 bg-gradient-header w-full">
       <div className="flex items-center justify-between w-full">
@@ -30,6 +50,11 @@ const CalendarHeader = () => {
             onClick={() => calendar.goToPreviousDay()}
           >
             <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <Button
+            className="text-white bg-white/10 hover:text-white hover:bg-white/20 rounded-none"
+          >
+            {goToButtonValue}
           </Button>
           <Button
             variant="ghost"
