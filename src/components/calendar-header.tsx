@@ -39,7 +39,7 @@ const CalendarHeader = () => {
   }, [calendar.currentDate]);
 
   return (
-    <header className="sticky top-0 z-10 flex flex-col items-start justify-start md:p-4 p-2 bg-gradient-header w-full">
+    <header className="sticky top-0 z-10 flex flex-col items-start justify-start md:p-4 p-2 bg-gradient-header w-full max-w-[100dvw] overflow-hidden">
       <div className="flex items-center justify-between w-full">
         <h1 className="text-white font-bold text-lg">{currentMonthAndYear}</h1>
         <div className="flex justify-center items-center gap-0 md:hidden">

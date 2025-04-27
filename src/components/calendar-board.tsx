@@ -224,7 +224,7 @@ const CalendarBoard = () => {
             calendar.events[dateStr] || []
           );
           return calendar.isMobile ? (
-            <AnimatePresence mode="wait">
+            <AnimatePresence key={dateStr} mode="wait">
               <motion.div
                 key={calendar.selectedDate.toISOString()} // key to re-trigger animation on date change
                 initial={{ x: 100, opacity: 0 }}
