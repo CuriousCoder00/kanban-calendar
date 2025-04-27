@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useCalendar from "@/hooks/use-calendar";
-import { Event, EventsByDate } from "@/types";
+import { EventsByDate } from "@/types";
 import { imageUrl } from "@/constants/image-url";
 
 // Zod Schema
