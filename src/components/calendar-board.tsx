@@ -12,6 +12,7 @@ import {
   DragMoveEvent,
   DragOverlay,
   TouchSensor,
+  pointerWithin,
 } from "@dnd-kit/core";
 import useCalendar from "@/hooks/use-calendar";
 import DayCol from "./day-col";
@@ -202,7 +203,7 @@ const CalendarBoard = () => {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={calendar.isMobile ? pointerWithin : closestCenter}
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}
       onDragEnd={handleDragEnd}
