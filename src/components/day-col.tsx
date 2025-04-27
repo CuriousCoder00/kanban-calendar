@@ -33,7 +33,7 @@ const DayCol = ({ date, events }: DayColProps) => {
     <div
       className={cn(
         "flex flex-col h-full",
-        calendar.isMobile ? "w-full" : "flex-1 min-w-[200px]",
+        calendar.isMobile ? "w-full" : "flex-1 lg:min-w-[200px] md:min-w-[150px] max-w-[300px]",
         "transition-all"
       )}
     >

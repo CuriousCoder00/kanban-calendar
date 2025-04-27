@@ -1,5 +1,6 @@
 "use client";
 
+import AddEvent from "@/components/add-event";
 import CalendarBoard from "@/components/calendar-board";
 import CalendarHeader from "@/components/calendar-header";
 import EventDetailCard from "@/components/event-details-card";
@@ -14,6 +15,7 @@ export default function Home() {
           <CalendarBoard />
         </div>
         <EventDetailCard />
+        <AddEvent/>
       </div>
     </CalendarProvider>
   );
