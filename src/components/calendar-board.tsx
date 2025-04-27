@@ -218,33 +218,37 @@ const CalendarBoard = () => {
             "after:content-[''] after:absolute after:right-0 after:top-0 after:w-1 after:h-full after:bg-blue-500/70 after:shadow-[0_0_10px_rgba(59,130,246,0.5)] after:transition-all after:duration-300"
         )}
       >
-        {calendar.weekDates.map((date) => {
-          const dateStr = formatDate(date);
-          const eventsForDate = sortEventsByTime(
-            calendar.events[dateStr] || []
-          );
-          return calendar.isMobile ? (
-            <AnimatePresence key={dateStr} mode="wait">
-              <motion.div
-                key={calendar.selectedDate.toISOString()} // key to re-trigger animation on date change
-                initial={{ x: 100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: -100, opacity: 0 }}
-                transition={{ type: "spring", stiffness: 400, damping: 40 }}
-                className="absolute inset-0 w-full overflow-hidden"
-              >
-                <DayCol
-                  date={calendar.selectedDate}
-                  events={
-                    calendar.events[formatDate(calendar.selectedDate)] || []
-                  }
-                />
-              </motion.div>
-            </AnimatePresence>
-          ) : (
-            <DayCol key={dateStr} date={date} events={eventsForDate} />
-          );
-        })}
+        {calendar.isMobile ? (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={calendar.selectedDate.toISOString()} // ✅ Correct: Key depends on selectedDate only once
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -100, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 400, damping: 40 }}
+              className="absolute inset-0 w-full overflow-hidden"
+            >
+              <DayCol
+                date={calendar.selectedDate}
+                events={
+                  calendar.events[formatDate(calendar.selectedDate)] || []
+                }
+              />
+            </motion.div>
+          </AnimatePresence>
+        ) : (
+          calendar.weekDates.map((date) => {
+            const dateStr = formatDate(date);
+            const eventsForDate = sortEventsByTime(
+              calendar.events[dateStr] || []
+            );
+            return (
+              <div key={dateStr} className="max-md:hidden">
+                <DayCol date={date} events={eventsForDate} />
+              </div>
+            );
+          })
+        )}
       </div>
 
       <DragOverlay>
