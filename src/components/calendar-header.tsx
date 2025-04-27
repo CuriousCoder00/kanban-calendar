@@ -3,12 +3,14 @@
 import React from "react";
 import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 import useCalendar from "@/hooks/use-calendar";
 import {
   formatDateForDay,
   formatDateForWeekdayOnDesktop,
   formatDateForWeekdayOnMobile,
 } from "@/lib/date-utils";
+import { cn } from "@/lib/utils";
 
 const CalendarHeader = () => {
   const calendar = useCalendar();
@@ -39,7 +41,7 @@ const CalendarHeader = () => {
           </Button>
         </div>
       </div>
-      
+
       <div className="flex justify-center items-center w-full gap-1 h-full mt-2">
         <Button
           variant="ghost"
@@ -49,42 +51,37 @@ const CalendarHeader = () => {
           <ChevronLeft className="h-5 w-5" />
         </Button>
         <div className="grid grid-cols-7 w-full gap-2">
-          {calendar.weekDates.map((date, index) =>
-            calendar.isMobile ? (
+          {calendar.weekDates.map((date, index) => (
+            <div key={index} className="relative w-full h-full">
+              {date.getTime() === calendar.selectedDate.getTime() && (
+                <motion.div
+                  layoutId="activeDate"
+                  className="absolute inset-0 rounded-md bg-gradient-active shadow-md shadow-black/30 z-0"
+                  transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+                />
+              )}
               <Button
-                key={index}
                 variant="ghost"
-                size="icon"
-                className={`w-full h-full flex flex-col items-center justify-center gap-0 p-2 rounded-md whitespace-nowrap text-white/100 hover:text-white ${
+                size={calendar.isMobile ? "icon" : undefined}
+                className={cn(
+                  "relative w-full h-full flex flex-col items-center justify-center gap-0 p-2 rounded-md whitespace-nowrap text-white hover:text-white hover:bg-transparent bg-transparent z-10",
                   date.getTime() === calendar.selectedDate.getTime()
-                    ? "bg-gradient-active text-white shadow-md shadow-black/30 hover:bg-white/20"
-                    : "text-white hover:bg-white/20 hover:shadow-md hover:shadow-black/20 transition-all duration-200 bg-white/10"
-                }`}
-                onClick={() => calendar.goToDate(date)}
-              >
-                <span className="text-xl font-bold">{formatDateForDay(date)}</span>
-                <span className="text-xs">{formatDateForWeekdayOnMobile(date)}</span>
-              </Button>
-            ) : (
-              <Button
-                key={index}
-                variant="ghost"
-                className={`h-full w-full rounded-md hover:text-white flex items-start justify-center text-start flex-col gap-0 ${
-                  date.getTime() === calendar.selectedDate.getTime()
-                    ? "bg-gradient-active text-white shadow-md shadow-black/30 hover:bg-white/20"
-                    : "text-white hover:bg-white/20 hover:shadow-md hover:shadow-black/20 transition-all duration-200 bg-white/10"
-                }`}
+                    ? "text-white"
+                    : "hover:bg-white/20 hover:shadow-md hover:shadow-black/20 transition-all duration-200 bg-white/10"
+                )}
                 onClick={() => calendar.goToDate(date)}
               >
                 <span className="text-xl font-bold">
                   {formatDateForDay(date)}
                 </span>
                 <span className="text-xs">
-                  {formatDateForWeekdayOnDesktop(date)}
+                  {calendar.isMobile
+                    ? formatDateForWeekdayOnMobile(date)
+                    : formatDateForWeekdayOnDesktop(date)}
                 </span>
               </Button>
-            )
-          )}
+            </div>
+          ))}
         </div>
         <Button
           variant="ghost"
